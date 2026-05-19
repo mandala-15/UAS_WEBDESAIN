@@ -1,0 +1,210 @@
+@import "tailwindcss";
+@import "flatpickr/dist/themes/material_green.css";
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 104px;
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease, opacity 160ms ease;
+}
+
+input,
+textarea,
+select {
+  outline: none;
+}
+
+@keyframes login-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes login-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translate3d(12px, -18px, 0);
+    opacity: 0.8;
+  }
+}
+
+@keyframes login-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.login-animated-bg {
+  background:
+    radial-gradient(circle at 20% 18%, rgba(16, 185, 129, 0.22), transparent 30%),
+    radial-gradient(circle at 78% 16%, rgba(52, 211, 153, 0.12), transparent 28%),
+    radial-gradient(circle at 50% 100%, rgba(4, 120, 87, 0.26), transparent 38%),
+    linear-gradient(125deg, #071a14, #0f172a, #06231d, #0f172a);
+  background-size: 180% 180%;
+  animation: login-gradient 22s ease-in-out infinite;
+}
+
+.login-card-in {
+  animation: login-card-in 700ms ease both;
+}
+
+@keyframes portal-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes portal-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -18px, 0);
+  }
+}
+
+@keyframes portal-shimmer {
+  0% {
+    transform: translateX(-120%) rotate(12deg);
+  }
+  100% {
+    transform: translateX(160%) rotate(12deg);
+  }
+}
+
+@keyframes portal-pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 22px rgba(212, 175, 55, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 42px rgba(212, 175, 55, 0.42);
+  }
+}
+
+.portal-gradient {
+  background:
+    radial-gradient(circle at 16% 18%, rgba(16, 185, 129, 0.18), transparent 30%),
+    radial-gradient(circle at 82% 10%, rgba(212, 175, 55, 0.16), transparent 28%),
+    linear-gradient(135deg, #0f3d2e, #166534, #d4af37);
+  background-size: 180% 180%;
+  animation: portal-gradient 24s ease-in-out infinite;
+}
+
+.portal-noise {
+  background-image:
+    radial-gradient(circle at 12% 24%, rgba(255, 255, 255, 0.08) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 74% 64%, rgba(255, 255, 255, 0.06) 0 1px, transparent 1.5px),
+    linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+  background-size: 29px 29px, 41px 41px, 38px 38px, 38px 38px;
+}
+
+.portal-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: -40% auto -40% 0;
+  width: 42%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+  animation: portal-shimmer 7s ease-in-out infinite;
+}
+
+.portal-hero {
+  background:
+    linear-gradient(90deg, rgba(5, 46, 43, 0.92), rgba(15, 61, 46, 0.56)),
+    url("https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=2200&q=85");
+  background-position: center;
+  background-size: cover;
+}
+
+.portal-glow-field {
+  background:
+    radial-gradient(circle at 18% 24%, rgba(16, 185, 129, 0.22), transparent 24%),
+    radial-gradient(circle at 68% 18%, rgba(234, 179, 8, 0.18), transparent 22%),
+    radial-gradient(circle at 50% 86%, rgba(4, 120, 87, 0.18), transparent 28%);
+  animation: portal-gradient 18s ease-in-out infinite;
+  background-size: 140% 140%;
+}
+
+.portal-pattern {
+  background-image:
+    radial-gradient(circle at center, rgba(212, 175, 55, 0.55) 1px, transparent 1.5px),
+    linear-gradient(45deg, rgba(212, 175, 55, 0.08) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(212, 175, 55, 0.06) 25%, transparent 25%);
+  background-size: 42px 42px, 76px 76px, 76px 76px;
+}
+
+.portal-fade-up {
+  animation: portal-fade-up 720ms ease both;
+}
+
+.portal-float-card {
+  animation: portal-card-float 5.5s ease-in-out infinite;
+}
+
+@keyframes portal-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes portal-card-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
