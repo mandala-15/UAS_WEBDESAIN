@@ -26,8 +26,8 @@ export function GalleryUploadForm() {
     setLoading(false);
 
     if (!res.ok) {
-      const data = await res.json();
-      setMessage(data.message ?? "Upload gagal.");
+      const data = await res.json().catch(() => null);
+      setMessage(data?.message ?? "Upload gagal. Periksa konfigurasi server.");
       return;
     }
 

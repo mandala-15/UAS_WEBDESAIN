@@ -44,8 +44,8 @@ export function CashForm({ type }: { type: "masuk" | "keluar" }) {
     setLoading(false);
 
     if (!res.ok) {
-      const data = await res.json();
-      setMessage(data.message ?? "Data gagal disimpan.");
+      const data = await res.json().catch(() => null);
+      setMessage(data?.message ?? "Data gagal disimpan. Periksa konfigurasi server.");
       return;
     }
 
