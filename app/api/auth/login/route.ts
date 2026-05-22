@@ -1,12 +1,16 @@
-import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import { db } from "@/db";
-import { users } from "@/db/schema";
+import postgres from "postgres";
 import { invalidJsonResponse, readJson } from "@/lib/api";
 import { setAuthCookie, signSession, verifyPassword } from "@/lib/auth";
 import { isDemoLoginEnabled } from "@/lib/env";
-import { sanitizeText } from "@/lib/sanitize";
 import { loginSchema } from "@/lib/validators";
+
+type LoginUser = {
+  id: string;
+  email: string;
+  role: "admin";
+  password_hash: string;
+};
 
 function cleanEnv(value: string | undefined) {
   const cleanValue = value?.trim();
@@ -27,7 +31,7 @@ export async function POST(req: Request) {
   if (!body) return invalidJsonResponse();
 
   const parsed = loginSchema.safeParse({
-    email: sanitizeText(body.email),
+    email: typeof body.email === "string" ? body.email.trim() : "",
     password: body.password,
   });
 
@@ -70,22 +74,34 @@ export async function POST(req: Request) {
     );
   }
 
-  let user: typeof users.$inferSelect | undefined;
+  let user: LoginUser | undefined;
+  const sql = postgres(databaseUrl, {
+    prepare: false,
+    ssl: "require",
+  });
+
   try {
-    [user] = await db.select().from(users).where(eq(users.email, parsed.data.email)).limit(1);
+    [user] = await sql<LoginUser[]>`
+      select id, email, role, password_hash
+      from users
+      where email = ${parsed.data.email}
+      limit 1
+    `;
   } catch (error) {
     console.error("Login database query failed", error);
     return NextResponse.json(
       { message: "Database belum tersambung. Isi DATABASE_URL di .env.local atau gunakan akun demo development." },
       { status: 500 },
     );
+  } finally {
+    await sql.end({ timeout: 5 }).catch(() => undefined);
   }
 
   if (!user) {
     return NextResponse.json({ message: "Email atau password salah." }, { status: 401 });
   }
 
-  const validPassword = await verifyPassword(parsed.data.password, user.passwordHash);
+  const validPassword = await verifyPassword(parsed.data.password, user.password_hash);
   if (!validPassword) {
     return NextResponse.json({ message: "Email atau password salah." }, { status: 401 });
   }
