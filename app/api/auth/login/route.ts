@@ -24,7 +24,10 @@ export async function POST(req: Request) {
   const demoEmail = process.env.DEMO_ADMIN_EMAIL;
   const demoPassword = process.env.DEMO_ADMIN_PASSWORD;
 
-  if (!process.env.DATABASE_URL && isDemoLoginEnabled() && demoEmail && demoPassword) {
+  const databaseUrl = process.env.DATABASE_URL;
+  const jwtSecret = process.env.JWT_SECRET;
+
+  if (!databaseUrl && isDemoLoginEnabled() && demoEmail && demoPassword) {
     if (parsed.data.email !== demoEmail || parsed.data.password !== demoPassword) {
       return NextResponse.json({ message: "Email atau password salah." }, { status: 401 });
     }
@@ -37,6 +40,20 @@ export async function POST(req: Request) {
     await setAuthCookie(token);
 
     return NextResponse.json({ message: "Login demo berhasil." });
+  }
+
+  if (!databaseUrl) {
+    return NextResponse.json(
+      { message: "DATABASE_URL belum diatur di environment server." },
+      { status: 500 },
+    );
+  }
+
+  if (!jwtSecret || jwtSecret.length < 32) {
+    return NextResponse.json(
+      { message: "JWT_SECRET belum diatur atau kurang dari 32 karakter." },
+      { status: 500 },
+    );
   }
 
   let user: typeof users.$inferSelect | undefined;

@@ -47,7 +47,7 @@ export default function LoginPage() {
 
     if (!res.ok) {
       const data = await res.json().catch(() => null);
-      setError(data.message ?? "Login gagal.");
+      setError(data?.message ?? "Login gagal. Periksa konfigurasi server.");
       return;
     }
 
