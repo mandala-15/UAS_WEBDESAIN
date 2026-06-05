@@ -1,7 +1,25 @@
 import { NextResponse, type NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
-import { AUTH_COOKIE } from "@/lib/auth";
+import { AUTH_COOKIE, AUTH_COOKIE_PATH } from "@/lib/auth";
 import { getJwtSecret } from "@/lib/env";
+
+function noStore(res: NextResponse) {
+  res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.headers.set("Pragma", "no-cache");
+  res.headers.set("Expires", "0");
+  return res;
+}
+
+function expireAuthCookie(res: NextResponse) {
+  res.cookies.set(AUTH_COOKIE, "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: AUTH_COOKIE_PATH,
+    maxAge: 0,
+    expires: new Date(0),
+  });
+}
 
 export function proxy(req: NextRequest) {
   const token = req.cookies.get(AUTH_COOKIE)?.value;
@@ -11,23 +29,23 @@ export function proxy(req: NextRequest) {
   if (!isDashboard && !isLogin) return NextResponse.next();
 
   if (!token && isDashboard) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    return noStore(NextResponse.redirect(new URL("/login", req.url)));
   }
 
-  if (!token) return NextResponse.next();
+  if (!token) return noStore(NextResponse.next());
 
   try {
     jwt.verify(token, getJwtSecret());
 
     if (isLogin) {
-      return NextResponse.redirect(new URL("/dashboard", req.url));
+      return noStore(NextResponse.redirect(new URL("/dashboard", req.url)));
     }
 
-    return NextResponse.next();
+    return noStore(NextResponse.next());
   } catch {
     const res = NextResponse.redirect(new URL("/login", req.url));
-    res.cookies.delete(AUTH_COOKIE);
-    return res;
+    expireAuthCookie(res);
+    return noStore(res);
   }
 }
 

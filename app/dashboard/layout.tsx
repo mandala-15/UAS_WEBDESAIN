@@ -1,6 +1,13 @@
 import { MobileNav, Sidebar } from "@/components/dashboard/Sidebar";
+import { getSession } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export const dynamic = "force-dynamic";
+
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const session = await getSession();
+  if (!session) redirect("/login");
+
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_18%_8%,rgba(16,185,129,0.16),transparent_28%),radial-gradient(circle_at_82%_4%,rgba(245,158,11,0.12),transparent_24%),linear-gradient(180deg,#f7faf7_0%,#eef4f0_100%)]">
       <Sidebar />

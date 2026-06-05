@@ -1,1 +1,1 @@
-export { POST } from "../auth/logout/route";
+export { GET, POST } from "../auth/logout/route";

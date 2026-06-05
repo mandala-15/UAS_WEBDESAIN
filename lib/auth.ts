@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { getJwtSecret } from "./env";
 
 export const AUTH_COOKIE = "masjid_session";
+export const AUTH_COOKIE_PATH = "/";
 
 export type SessionPayload = {
   sub: string;
@@ -43,7 +44,7 @@ export async function setAuthCookie(token: string) {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
-    path: "/",
+    path: AUTH_COOKIE_PATH,
     maxAge: secondsUntilMidnight(),
   });
 }
@@ -51,6 +52,14 @@ export async function setAuthCookie(token: string) {
 export async function clearAuthCookie() {
   const jar = await cookies();
   jar.delete(AUTH_COOKIE);
+  jar.set(AUTH_COOKIE, "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: AUTH_COOKIE_PATH,
+    maxAge: 0,
+    expires: new Date(0),
+  });
 }
 
 export async function getSession() {
