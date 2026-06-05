@@ -12,9 +12,9 @@ function clearResponseCookie(res: NextResponse) {
   });
 }
 
-export async function POST() {
+export async function POST(req: Request) {
   await clearAuthCookie();
-  const res = NextResponse.json({ message: "Logout berhasil.", redirectTo: "/login" });
+  const res = NextResponse.redirect(new URL("/login", req.url), { status: 303 });
   clearResponseCookie(res);
   res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
   return res;
