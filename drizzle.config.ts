@@ -18,11 +18,17 @@ if (!process.env.DATABASE_URL && existsSync(".env.local")) {
   }
 }
 
+const databaseUrl = process.env.DATABASE_URL?.trim().replace(/^['"]|['"]$/g, "");
+
+if (!databaseUrl) {
+  throw new Error("DATABASE_URL wajib diatur sebelum menjalankan drizzle-kit.");
+}
+
 export default defineConfig({
   schema: "./db/schema.ts",
   out: "./drizzle",
   dialect: "postgresql",
   dbCredentials: {
-    url: process.env.DATABASE_URL!,
+    url: databaseUrl,
   },
 });

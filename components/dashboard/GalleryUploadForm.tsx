@@ -18,21 +18,26 @@ export function GalleryUploadForm() {
     setMessage("");
 
     const formData = new FormData(event.currentTarget);
-    const res = await fetch("/api/upload", {
-      method: "POST",
-      body: formData,
-    });
-
-    setLoading(false);
-
-    if (!res.ok) {
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
       const data = await res.json().catch(() => null);
-      setMessage(data?.message ?? "Upload gagal. Periksa konfigurasi server.");
-      return;
-    }
 
-    setMessage("Gambar berhasil diupload dan tersimpan.");
-    router.refresh();
+      if (!res.ok) {
+        setMessage(data?.message ?? "Upload gagal. Periksa konfigurasi server.");
+        return;
+      }
+
+      event.currentTarget.reset();
+      setMessage("Gambar berhasil diupload dan tersimpan.");
+      router.refresh();
+    } catch {
+      setMessage("Upload gagal. Server tidak merespons.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (

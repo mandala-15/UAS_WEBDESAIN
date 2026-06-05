@@ -1,14 +1,17 @@
 import postgres from "postgres";
+import { cleanEnvValue, loadLocalEnv, postgresOptions } from "./load-env.mjs";
 
-const connectionString = process.env.DATABASE_URL;
-const adminEmail = process.env.ADMIN_EMAIL ?? "admin@mesjid.tes";
+loadLocalEnv();
+
+const connectionString = cleanEnvValue(process.env.DATABASE_URL);
+const adminEmail = cleanEnvValue(process.env.ADMIN_EMAIL) || "admin@mesjid.tes";
 
 if (!connectionString) {
   console.error("Set DATABASE_URL sebelum menjalankan seed data.");
   process.exit(1);
 }
 
-const sql = postgres(connectionString, { ssl: "require", prepare: false });
+const sql = postgres(connectionString, postgresOptions(connectionString));
 
 const [admin] = await sql`
   select id

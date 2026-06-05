@@ -1,17 +1,20 @@
 import bcrypt from "bcryptjs";
 import postgres from "postgres";
+import { cleanEnvValue, loadLocalEnv, postgresOptions } from "./load-env.mjs";
 
-const connectionString = process.env.DATABASE_URL;
-const email = process.env.ADMIN_EMAIL;
-const password = process.env.ADMIN_PASSWORD;
-const name = process.env.ADMIN_NAME ?? "Administrator";
+loadLocalEnv();
+
+const connectionString = cleanEnvValue(process.env.DATABASE_URL);
+const email = cleanEnvValue(process.env.ADMIN_EMAIL);
+const password = cleanEnvValue(process.env.ADMIN_PASSWORD);
+const name = cleanEnvValue(process.env.ADMIN_NAME) || "Administrator";
 
 if (!connectionString || !email || !password) {
   console.error("Set DATABASE_URL, ADMIN_EMAIL, dan ADMIN_PASSWORD sebelum menjalankan seed.");
   process.exit(1);
 }
 
-const sql = postgres(connectionString, { ssl: "require", prepare: false });
+const sql = postgres(connectionString, postgresOptions(connectionString));
 const passwordHash = await bcrypt.hash(password, 12);
 
 await sql`
@@ -23,4 +26,3 @@ await sql`
 
 await sql.end();
 console.log(`Admin siap: ${email}`);
-

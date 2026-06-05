@@ -35,22 +35,27 @@ export function CashForm({ type }: { type: "masuk" | "keluar" }) {
             keterangan: formData.get("keterangan"),
           };
 
-    const res = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    setLoading(false);
-
-    if (!res.ok) {
+    try {
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
       const data = await res.json().catch(() => null);
-      setMessage(data?.message ?? "Data gagal disimpan. Periksa konfigurasi server.");
-      return;
-    }
 
-    setMessage("Data berhasil disimpan.");
-    router.refresh();
+      if (!res.ok) {
+        setMessage(data?.message ?? "Data gagal disimpan. Periksa konfigurasi server.");
+        return;
+      }
+
+      event.currentTarget.reset();
+      setMessage("Data berhasil disimpan.");
+      router.refresh();
+    } catch {
+      setMessage("Data gagal disimpan. Server tidak merespons.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (

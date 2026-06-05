@@ -1,8 +1,7 @@
 import { desc } from "drizzle-orm";
 import { CalendarCheck, Clock, MapPin, Sparkles } from "lucide-react";
-import { DateInput } from "@/components/dashboard/DateInput";
+import { KegiatanForm } from "@/components/dashboard/KegiatanForm";
 import { PageHeader } from "@/components/dashboard/PageHeader";
-import { SafeInputNoSsr, SafeTextareaNoSsr } from "@/components/ui/SafeFieldsNoSsr";
 import { db } from "@/db";
 import { kegiatan } from "@/db/schema";
 import { sampleKegiatan } from "@/lib/sample-data";
@@ -36,14 +35,7 @@ export default async function KegiatanPage() {
     <div className="space-y-7">
       <PageHeader eyebrow="Kegiatan" title="Kelola kegiatan mesjid" description="Susun agenda dengan timeline visual, status kegiatan, dan form publikasi yang rapi." icon={CalendarCheck} />
       <div className="grid gap-6 xl:grid-cols-[430px_1fr]">
-        <form className="space-y-5 rounded-[28px] border border-white/70 bg-white/82 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)] backdrop-blur-xl">
-          <h2 className="text-xl font-semibold text-stone-950">Tambah Kegiatan</h2>
-          <div><label className="text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">Judul</label><SafeInputNoSsr name="judul" className="mt-2 h-[52px] w-full rounded-2xl border border-stone-200 bg-white/85 px-4 py-3 text-sm shadow-[0_10px_28px_rgba(15,23,42,0.05)] focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10" /></div>
-          <div><label className="text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">Tanggal Mulai</label><DateInput name="tanggalMulai" enableTime /></div>
-          <div><label className="text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">Tanggal Selesai</label><DateInput name="tanggalSelesai" enableTime /></div>
-          <div><label className="text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">Lokasi</label><SafeInputNoSsr name="lokasi" className="mt-2 h-[52px] w-full rounded-2xl border border-stone-200 bg-white/85 px-4 py-3 text-sm shadow-[0_10px_28px_rgba(15,23,42,0.05)] focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10" /></div>
-          <div><label className="text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">Deskripsi</label><SafeTextareaNoSsr name="deskripsi" className="mt-2 min-h-32 w-full rounded-2xl border border-stone-200 bg-white/85 px-4 py-3 text-sm shadow-[0_10px_28px_rgba(15,23,42,0.05)] focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10" /></div>
-        </form>
+        <KegiatanForm />
         <div className="rounded-[28px] border border-white/70 bg-white/82 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)] backdrop-blur-xl">
           <h2 className="text-xl font-semibold text-stone-950">Timeline Kegiatan</h2>
           <div className="mt-6 space-y-5">

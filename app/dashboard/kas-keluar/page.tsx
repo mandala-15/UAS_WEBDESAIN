@@ -1,12 +1,11 @@
 import { desc } from "drizzle-orm";
 import { ArrowDownCircle } from "lucide-react";
+import { CashTable } from "@/components/dashboard/CashTable";
 import { CashForm } from "@/components/dashboard/CashForm";
-import { ModernTable } from "@/components/dashboard/ModernTable";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { db } from "@/db";
 import { kasKeluar } from "@/db/schema";
 import { sampleKasKeluar } from "@/lib/sample-data";
-import { formatRupiah } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -32,9 +31,9 @@ export default async function KasKeluarPage() {
         <CashForm type="keluar" />
       </section>
       <section>
-        <ModernTable
-          columns={["Tanggal", "Kategori", "Keterangan", "Jumlah"]}
-          rows={rows.map((row) => [row.tanggal, row.kategori, row.keterangan, <span key={row.id} className="font-semibold text-rose-700">{formatRupiah(row.jumlah)}</span>])}
+        <CashTable
+          type="keluar"
+          rows={rows}
           empty="Belum ada data kas keluar atau database belum dikonfigurasi."
         />
       </section>

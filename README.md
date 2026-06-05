@@ -16,6 +16,8 @@ Project Next.js App Router untuk portal mesjid dan dashboard admin kas. Stack ut
 ```bash
 npm install
 cp .env.example .env.local
+npm run db:push
+npm run seed:admin
 npm run dev
 ```
 
@@ -36,7 +38,13 @@ SUPABASE_SERVICE_ROLE_KEY="xxxxx"
 
 ## Database
 
-Generate dan jalankan migration:
+Project ini memakai Drizzle, bukan Prisma. Untuk sinkron cepat schema ke database:
+
+```bash
+npm run db:push
+```
+
+Untuk alur migration:
 
 ```bash
 npm run db:generate
@@ -85,12 +93,15 @@ Buat bucket bernama `masjid-assets`. Untuk portal publik, bucket bisa dibuat pub
 
 1. Push repository ke GitHub.
 2. Import project di Vercel.
-3. Tambahkan environment variables production.
-4. Jalankan `npm run db:migrate` dengan `DATABASE_URL` Supabase.
-5. Deploy.
+3. Tambahkan environment variables untuk Production dan Preview:
+   `DATABASE_URL`, `JWT_SECRET`, `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, dan `SUPABASE_SERVICE_ROLE_KEY`.
+4. Jalankan `npm run db:push` atau `npm run db:migrate` dari lokal/CI dengan `DATABASE_URL` Supabase.
+5. Jalankan `npm run seed:admin` sekali untuk membuat admin.
+6. Redeploy di Vercel, lalu cek `/api/health`. Status database harus `ok`.
+
+Catatan: `NEXT_PUBLIC_APP_URL` hanya dibutuhkan untuk URL publik client-side. API internal memakai relative URL seperti `/api/login`, jadi aman untuk Production dan Preview.
 
 Untuk domain `.my.id`, tambahkan domain di Vercel lalu arahkan DNS provider:
 
 - `A` root domain ke IP Vercel.
 - `CNAME` `www` ke `cname.vercel-dns.com`.
-

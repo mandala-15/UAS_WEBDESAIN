@@ -17,6 +17,7 @@ const particles = Array.from({ length: 28 }, (_, index) => ({
 export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [parallax, setParallax] = useState({ x: 0, y: 0 });
@@ -32,27 +33,33 @@ export default function LoginPage() {
     event.preventDefault();
     setLoading(true);
     setError("");
+    setSuccess("");
     const formData = new FormData(event.currentTarget);
 
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: formData.get("email"),
-        password: formData.get("password"),
-      }),
-    });
-
-    setLoading(false);
-
-    if (!res.ok) {
+    try {
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.get("email"),
+          password: formData.get("password"),
+        }),
+      });
       const data = await res.json().catch(() => null);
-      setError(data?.message ?? "Login gagal. Periksa konfigurasi server.");
-      return;
-    }
 
-    router.push("/dashboard");
-    router.refresh();
+      if (!res.ok) {
+        setError(data?.message ?? "Login gagal. Periksa konfigurasi server.");
+        return;
+      }
+
+      setSuccess(data?.message ?? "Login berhasil.");
+      router.push("/dashboard");
+      router.refresh();
+    } catch {
+      setError("Login gagal. Server tidak merespons.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -120,6 +127,11 @@ export default function LoginPage() {
               {error}
             </p>
           ) : null}
+          {success ? (
+            <p className="mb-5 rounded-2xl border border-emerald-300/20 bg-emerald-400/12 px-4 py-3 text-sm text-emerald-100">
+              {success}
+            </p>
+          ) : null}
 
           <div className="space-y-5">
             <label className="block">
@@ -130,6 +142,7 @@ export default function LoginPage() {
                   name="email"
                   type="email"
                   required
+                  disabled={loading}
                   suppressHydrationWarning
                   placeholder="admin@mesjid.test"
                   className="h-full flex-1 bg-transparent text-sm text-white placeholder:text-white/35"
@@ -145,6 +158,7 @@ export default function LoginPage() {
                   name="password"
                   type={showPassword ? "text" : "password"}
                   required
+                  disabled={loading}
                   suppressHydrationWarning
                   placeholder="Masukkan password"
                   className="h-full flex-1 bg-transparent text-sm text-white placeholder:text-white/35"
@@ -153,6 +167,7 @@ export default function LoginPage() {
                   type="button"
                   suppressHydrationWarning
                   onClick={() => setShowPassword((value) => !value)}
+                  disabled={loading}
                   className="rounded-xl p-2 text-emerald-100/70 hover:bg-white/10 hover:text-white"
                   aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
                 >

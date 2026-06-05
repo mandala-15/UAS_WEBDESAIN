@@ -1,30 +1,18 @@
 import { NextResponse } from "next/server";
-import postgres from "postgres";
+import { eq } from "drizzle-orm";
+import { db, hasDatabaseUrl } from "@/db";
+import { users } from "@/db/schema";
 import { invalidJsonResponse, readJson } from "@/lib/api";
 import { setAuthCookie, signSession, verifyPassword } from "@/lib/auth";
-import { isDemoLoginEnabled } from "@/lib/env";
+import { cleanEnvValue, isDemoLoginEnabled } from "@/lib/env";
 import { loginSchema } from "@/lib/validators";
 
 type LoginUser = {
   id: string;
   email: string;
   role: "admin";
-  password_hash: string;
+  passwordHash: string;
 };
-
-function cleanEnv(value: string | undefined) {
-  const cleanValue = value?.trim();
-  if (!cleanValue) return "";
-
-  if (
-    (cleanValue.startsWith('"') && cleanValue.endsWith('"')) ||
-    (cleanValue.startsWith("'") && cleanValue.endsWith("'"))
-  ) {
-    return cleanValue.slice(1, -1);
-  }
-
-  return cleanValue;
-}
 
 export async function POST(req: Request) {
   const body = await readJson(req);
@@ -38,15 +26,22 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return NextResponse.json({ message: "Email atau password tidak valid." }, { status: 422 });
   }
+  const credentials = parsed.data;
 
-  const demoEmail = process.env.DEMO_ADMIN_EMAIL;
-  const demoPassword = process.env.DEMO_ADMIN_PASSWORD;
+  const demoEmail = cleanEnvValue(process.env.DEMO_ADMIN_EMAIL);
+  const demoPassword = cleanEnvValue(process.env.DEMO_ADMIN_PASSWORD);
 
-  const databaseUrl = cleanEnv(process.env.DATABASE_URL);
-  const jwtSecret = cleanEnv(process.env.JWT_SECRET);
+  const jwtSecret = cleanEnvValue(process.env.JWT_SECRET);
 
-  if (!databaseUrl && isDemoLoginEnabled() && demoEmail && demoPassword) {
-    if (parsed.data.email !== demoEmail || parsed.data.password !== demoPassword) {
+  if (!jwtSecret || jwtSecret.length < 32) {
+    return NextResponse.json(
+      { message: "JWT_SECRET belum diatur atau kurang dari 32 karakter." },
+      { status: 500 },
+    );
+  }
+
+  async function loginWithDemo(message = "Login demo berhasil.") {
+    if (credentials.email !== demoEmail || credentials.password !== demoPassword) {
       return NextResponse.json({ message: "Email atau password salah." }, { status: 401 });
     }
 
@@ -57,57 +52,52 @@ export async function POST(req: Request) {
     });
     await setAuthCookie(token);
 
-    return NextResponse.json({ message: "Login demo berhasil." });
+    return NextResponse.json({ message });
   }
 
-  if (!databaseUrl) {
-    return NextResponse.json(
-      { message: "DATABASE_URL belum diatur di environment server." },
-      { status: 500 },
-    );
-  }
+  if (!hasDatabaseUrl) {
+    if (isDemoLoginEnabled()) {
+      return loginWithDemo("Login demo berhasil karena database development belum tersedia.");
+    }
 
-  if (!jwtSecret || jwtSecret.length < 32) {
-    return NextResponse.json(
-      { message: "JWT_SECRET belum diatur atau kurang dari 32 karakter." },
-      { status: 500 },
-    );
+    return NextResponse.json({ message: "DATABASE_URL belum diatur di environment server." }, { status: 500 });
   }
-
-  let user: LoginUser | undefined;
-  const sql = postgres(databaseUrl, {
-    prepare: false,
-    ssl: "require",
-  });
 
   try {
-    [user] = await sql<LoginUser[]>`
-      select id, email, role, password_hash
-      from users
-      where email = ${parsed.data.email}
-      limit 1
-    `;
+    const [user] = await db
+      .select({
+        id: users.id,
+        email: users.email,
+        role: users.role,
+        passwordHash: users.passwordHash,
+      })
+      .from(users)
+      .where(eq(users.email, credentials.email))
+      .limit(1) as LoginUser[];
+
+    if (!user) {
+      return NextResponse.json({ message: "Email atau password salah." }, { status: 401 });
+    }
+
+    const validPassword = await verifyPassword(credentials.password, user.passwordHash);
+    if (!validPassword) {
+      return NextResponse.json({ message: "Email atau password salah." }, { status: 401 });
+    }
+
+    const token = signSession({ sub: user.id, email: user.email, role: user.role });
+    await setAuthCookie(token);
+
+    return NextResponse.json({ message: "Login berhasil." });
   } catch (error) {
     console.error("Login database query failed", error);
+    if (isDemoLoginEnabled()) {
+      return loginWithDemo("Login demo berhasil karena koneksi database development gagal.");
+    }
+
+    const detail = error instanceof Error ? error.message : "Koneksi database gagal.";
     return NextResponse.json(
-      { message: "Database belum tersambung. Isi DATABASE_URL di .env.local atau gunakan akun demo development." },
+      { message: `Database gagal tersambung. Periksa DATABASE_URL dan migration. Detail: ${detail}` },
       { status: 500 },
     );
-  } finally {
-    await sql.end({ timeout: 5 }).catch(() => undefined);
   }
-
-  if (!user) {
-    return NextResponse.json({ message: "Email atau password salah." }, { status: 401 });
-  }
-
-  const validPassword = await verifyPassword(parsed.data.password, user.password_hash);
-  if (!validPassword) {
-    return NextResponse.json({ message: "Email atau password salah." }, { status: 401 });
-  }
-
-  const token = signSession({ sub: user.id, email: user.email, role: user.role });
-  await setAuthCookie(token);
-
-  return NextResponse.json({ message: "Login berhasil." });
 }
