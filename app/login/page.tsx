@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import type { FormEvent, MouseEvent } from "react";
 import { useState } from "react";
-import { Eye, EyeOff, LockKeyhole, Mail, ShieldCheck } from "lucide-react";
+import { Eye, EyeOff, LockKeyhole, Mail, ShieldCheck, UserPlus, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 const particles = Array.from({ length: 28 }, (_, index) => ({
@@ -20,6 +20,7 @@ export default function LoginPage() {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isRegister, setIsRegister] = useState(false);
   const [parallax, setParallax] = useState({ x: 0, y: 0 });
 
   function handleMouseMove(event: MouseEvent<HTMLElement>) {
@@ -37,10 +38,11 @@ export default function LoginPage() {
     const formData = new FormData(event.currentTarget);
 
     try {
-      const res = await fetch("/api/login", {
+      const res = await fetch(isRegister ? "/api/register" : "/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          name: formData.get("name"),
           email: formData.get("email"),
           password: formData.get("password"),
         }),
@@ -52,7 +54,7 @@ export default function LoginPage() {
         return;
       }
 
-      setSuccess(data?.message ?? "Login berhasil.");
+      setSuccess(data?.message ?? (isRegister ? "Akun berhasil dibuat." : "Login berhasil."));
       router.push("/dashboard");
       router.refresh();
     } catch {
@@ -114,11 +116,15 @@ export default function LoginPage() {
         >
           <div className="mb-8 flex items-center gap-4">
             <span className="grid h-[52px] w-[52px] place-items-center rounded-[18px] bg-emerald-500/18 text-emerald-200 shadow-[0_0_35px_rgba(16,185,129,0.24)] ring-1 ring-emerald-300/20">
-              <LockKeyhole size={24} />
+              {isRegister ? <UserPlus size={24} /> : <LockKeyhole size={24} />}
             </span>
             <div>
-              <h1 className="text-2xl font-semibold tracking-tight text-white">Login Admin</h1>
-              <p className="mt-1 text-sm text-emerald-50/68">Session akan reset otomatis jam 00.00</p>
+              <h1 className="text-2xl font-semibold tracking-tight text-white">
+                {isRegister ? "Buat Akun Admin" : "Login Admin"}
+              </h1>
+              <p className="mt-1 text-sm text-emerald-50/68">
+                {isRegister ? "Daftar akun untuk mengelola kas masjid" : "Session akan reset otomatis jam 00.00"}
+              </p>
             </div>
           </div>
 
@@ -134,6 +140,26 @@ export default function LoginPage() {
           ) : null}
 
           <div className="space-y-5">
+            {isRegister ? (
+              <label className="block">
+                <span className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-50/70">Nama</span>
+                <span className="mt-2 flex h-[54px] items-center gap-3 rounded-[14px] border border-white/10 bg-slate-100/10 px-4 shadow-inner focus-within:border-emerald-300/55 focus-within:ring-4 focus-within:ring-emerald-400/12">
+                  <UserRound size={18} className="text-emerald-200/80" />
+                  <input
+                    name="name"
+                    type="text"
+                    required
+                    minLength={2}
+                    maxLength={120}
+                    disabled={loading}
+                    suppressHydrationWarning
+                    placeholder="Nama admin"
+                    className="h-full flex-1 bg-transparent text-sm text-white placeholder:text-white/35"
+                  />
+                </span>
+              </label>
+            ) : null}
+
             <label className="block">
               <span className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-50/70">Email</span>
               <span className="mt-2 flex h-[54px] items-center gap-3 rounded-[14px] border border-white/10 bg-slate-100/10 px-4 shadow-inner focus-within:border-emerald-300/55 focus-within:ring-4 focus-within:ring-emerald-400/12">
@@ -181,8 +207,24 @@ export default function LoginPage() {
             disabled={loading}
             className="mt-7 w-full rounded-[16px] bg-[linear-gradient(135deg,#10B981,#047857)] shadow-[0_18px_45px_rgba(16,185,129,0.28)] hover:scale-[1.01] hover:shadow-[0_22px_60px_rgba(16,185,129,0.38)]"
           >
-            {loading ? "Memproses..." : "Masuk"}
+            {loading ? "Memproses..." : isRegister ? "Buat Akun" : "Masuk"}
           </Button>
+
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-2 text-sm text-emerald-50/60">
+            <span>{isRegister ? "Sudah punya akun?" : "Belum punya akun?"}</span>
+            <button
+              type="button"
+              disabled={loading}
+              onClick={() => {
+                setIsRegister((value) => !value);
+                setError("");
+                setSuccess("");
+              }}
+              className="font-semibold text-emerald-200 underline-offset-4 hover:text-white hover:underline disabled:opacity-60"
+            >
+              {isRegister ? "Masuk" : "Buat akun"}
+            </button>
+          </div>
 
           <p className="mt-6 text-center text-xs text-emerald-50/50">
             Sistem Manajemen Kas Masjid

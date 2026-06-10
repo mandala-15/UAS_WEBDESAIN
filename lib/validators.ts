@@ -7,6 +7,10 @@ export const loginSchema = z.object({
   password: z.string().min(8).max(72),
 });
 
+export const registerSchema = loginSchema.extend({
+  name: z.string().trim().min(2).max(120),
+});
+
 export const kasMasukSchema = z.object({
   tanggal: dateOnly,
   sumber: z.string().min(2).max(120),
