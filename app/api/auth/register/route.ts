@@ -63,11 +63,12 @@ export async function POST(req: Request) {
       })
       .returning({
         id: users.id,
+        name: users.name,
         email: users.email,
         role: users.role,
       });
 
-    const token = signSession({ sub: user.id, email: user.email, role: user.role });
+    const token = signSession({ sub: user.id, email: user.email, name: user.name, role: user.role });
     await setAuthCookie(token);
 
     return NextResponse.json({ message: "Akun berhasil dibuat." }, { status: 201 });

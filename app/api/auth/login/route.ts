@@ -9,6 +9,7 @@ import { loginSchema } from "@/lib/validators";
 
 type LoginUser = {
   id: string;
+  name: string;
   email: string;
   role: "admin";
   passwordHash: string;
@@ -48,6 +49,7 @@ export async function POST(req: Request) {
     const token = signSession({
       sub: "00000000-0000-0000-0000-000000000001",
       email: demoEmail,
+      name: "Admin Demo",
       role: "admin",
     });
     await setAuthCookie(token);
@@ -67,6 +69,7 @@ export async function POST(req: Request) {
     const [user] = await db
       .select({
         id: users.id,
+        name: users.name,
         email: users.email,
         role: users.role,
         passwordHash: users.passwordHash,
@@ -84,7 +87,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Email atau password salah." }, { status: 401 });
     }
 
-    const token = signSession({ sub: user.id, email: user.email, role: user.role });
+    const token = signSession({ sub: user.id, email: user.email, name: user.name, role: user.role });
     await setAuthCookie(token);
 
     return NextResponse.json({ message: "Login berhasil." });

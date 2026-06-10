@@ -9,6 +9,7 @@ export const AUTH_COOKIE_PATH = "/";
 export type SessionPayload = {
   sub: string;
   email: string;
+  name?: string;
   role: "admin";
 };
 

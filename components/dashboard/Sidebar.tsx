@@ -11,7 +11,25 @@ const menus = [
   { label: "Galeri", href: "/dashboard/galeri", icon: Image },
 ];
 
-export function Sidebar() {
+type Profile = {
+  name: string;
+  email: string;
+};
+
+function getInitials(name: string) {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return "A";
+
+  return words
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
+}
+
+export function Sidebar({ profile }: { profile: Profile }) {
+  const initials = getInitials(profile.name);
+
   return (
     <aside className="fixed inset-y-0 left-0 z-20 hidden w-72 overflow-hidden bg-[linear-gradient(160deg,#08110f_0%,#10251f_52%,#1d3c34_100%)] p-5 text-white shadow-[18px_0_45px_rgba(15,23,42,0.16)] md:block">
       <div className="pointer-events-none absolute -left-20 top-12 h-52 w-52 rounded-full bg-emerald-400/15 blur-3xl" />
@@ -43,12 +61,16 @@ export function Sidebar() {
       </nav>
       <div className="relative mt-7 rounded-[22px] border border-white/10 bg-white/[0.07] p-4 backdrop-blur-xl">
         <div className="flex items-center gap-3">
-          <span className="rounded-2xl bg-emerald-300/20 p-3 text-emerald-100">
-            <ShieldCheck size={20} />
+          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-emerald-300/20 text-sm font-bold text-emerald-50 ring-1 ring-emerald-200/15">
+            {initials}
           </span>
-          <div>
-            <p className="text-sm font-semibold text-white">Admin Mesjid</p>
-            <p className="text-xs text-emerald-100/70">Secure session</p>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold text-white">{profile.name}</p>
+            <p className="truncate text-xs text-emerald-100/70">{profile.email}</p>
+            <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-emerald-200/80">
+              <ShieldCheck size={12} />
+              Secure session
+            </p>
           </div>
         </div>
       </div>
@@ -57,18 +79,31 @@ export function Sidebar() {
   );
 }
 
-export function MobileNav() {
+export function MobileNav({ profile }: { profile: Profile }) {
+  const initials = getInitials(profile.name);
+
   return (
-    <nav className="fixed inset-x-3 bottom-3 z-30 grid grid-cols-5 rounded-[22px] border border-white/60 bg-white/85 shadow-[0_18px_50px_rgba(15,23,42,0.18)] backdrop-blur-xl md:hidden">
-      {menus.slice(0, 5).map((item) => {
-        const Icon = item.icon;
-        return (
-          <Link key={item.href} href={item.href} className="flex flex-col items-center gap-1 px-2 py-3 text-[11px] font-medium text-stone-700">
-            <Icon size={18} />
-            <span className="truncate">{item.label.replace("Kas ", "")}</span>
-          </Link>
-        );
-      })}
-    </nav>
+    <div className="fixed inset-x-3 bottom-3 z-30 md:hidden">
+      <div className="mb-2 flex items-center gap-3 rounded-[20px] border border-white/60 bg-emerald-950/90 px-4 py-3 text-white shadow-[0_18px_50px_rgba(15,23,42,0.18)] backdrop-blur-xl">
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-emerald-300/20 text-xs font-bold ring-1 ring-emerald-200/15">
+          {initials}
+        </span>
+        <div className="min-w-0">
+          <p className="truncate text-sm font-semibold">{profile.name}</p>
+          <p className="truncate text-xs text-emerald-100/70">{profile.email}</p>
+        </div>
+      </div>
+      <nav className="grid grid-cols-5 rounded-[22px] border border-white/60 bg-white/85 shadow-[0_18px_50px_rgba(15,23,42,0.18)] backdrop-blur-xl">
+        {menus.slice(0, 5).map((item) => {
+          const Icon = item.icon;
+          return (
+            <Link key={item.href} href={item.href} className="flex flex-col items-center gap-1 px-2 py-3 text-[11px] font-medium text-stone-700">
+              <Icon size={18} />
+              <span className="truncate">{item.label.replace("Kas ", "")}</span>
+            </Link>
+          );
+        })}
+      </nav>
+    </div>
   );
 }
