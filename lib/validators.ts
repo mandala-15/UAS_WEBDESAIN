@@ -40,3 +40,14 @@ export const uploadSchema = z.object({
   mimeType: z.enum(["image/jpeg", "image/png", "image/webp"]),
   size: z.number().positive().max(2 * 1024 * 1024),
 });
+
+export const donationSchema = z.object({
+  programId: z.uuid().optional().nullable(),
+  purpose: z.string().trim().min(2).max(160),
+  donorName: z.string().trim().min(2).max(120),
+  amount: z.coerce.number().positive().max(999_999_999_999),
+  whatsapp: z.string().trim().min(8).max(32).regex(/^[0-9+\-\s()]+$/, "Nomor WhatsApp tidak valid"),
+  message: z.string().trim().max(1000).optional().nullable(),
+  paymentMethod: z.enum(["qris", "bank_transfer", "ewallet"]),
+  isAnonymous: z.coerce.boolean().optional().default(false),
+});

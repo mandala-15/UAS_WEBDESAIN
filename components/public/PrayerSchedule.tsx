@@ -1,4 +1,4 @@
-import { CalendarDays, MapPin } from "lucide-react";
+import { CalendarDays, MapPin, Mic2, MoonStar, UserRound } from "lucide-react";
 import { getPekanbaruFallbackSchedule, getPekanbaruPrayerSchedule } from "@/lib/prayer-schedule";
 import { PrayerBoard } from "./PrayerBoard";
 import { PrayerCountdown } from "./PrayerCountdown";
@@ -20,12 +20,25 @@ async function getSchedule() {
   }
 }
 
+function formatHijriDate(date: string) {
+  try {
+    return new Intl.DateTimeFormat("id-ID-u-ca-islamic", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(new Date(date));
+  } catch {
+    return "Kalender Hijriah";
+  }
+}
+
 export async function PrayerSchedule() {
   const data = await getSchedule();
   const items = prayerLabels.map(([label, key]) => ({ label, time: data.jadwal[key] }));
   const tomorrowItems = data.jadwalBesok
     ? prayerLabels.map(([label, key]) => ({ label, time: data.jadwalBesok?.[key] ?? "--:--" }))
     : undefined;
+  const hijriDate = formatHijriDate(data.jadwal.tanggal_iso);
 
   return (
     <section id="jadwal" className="h-fit scroll-mt-28 overflow-hidden rounded-[28px] border border-white bg-white/92 p-5 shadow-[0_22px_70px_rgba(15,23,42,0.08)] backdrop-blur-xl">
@@ -41,6 +54,9 @@ export async function PrayerSchedule() {
             <p className="mt-1 flex flex-wrap items-center gap-2 text-sm text-emerald-50/72">
               {data.jadwal.hari}, {data.jadwal.tanggal_lengkap} <CalendarDays size={14} />
             </p>
+            <p className="mt-2 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold text-yellow-100">
+              <MoonStar size={13} /> {hijriDate}
+            </p>
           </div>
         </div>
       </div>
@@ -53,6 +69,21 @@ export async function PrayerSchedule() {
         tomorrowDate={data.jadwalBesok?.tanggal_iso}
         tomorrowTimes={tomorrowItems}
       />
+
+      <div className="mt-4 grid gap-3 sm:grid-cols-3">
+        <div className="rounded-[20px] border border-slate-200 bg-slate-50 p-4">
+          <p className="flex items-center gap-2 text-xs font-semibold text-slate-500"><UserRound size={14} /> Imam Hari Ini</p>
+          <p className="mt-2 font-semibold text-slate-950">Ust. Muhammad Ridwan</p>
+        </div>
+        <div className="rounded-[20px] border border-slate-200 bg-slate-50 p-4">
+          <p className="flex items-center gap-2 text-xs font-semibold text-slate-500"><Mic2 size={14} /> Khatib Jumat</p>
+          <p className="mt-2 font-semibold text-slate-950">Ust. Ahmad Syukri</p>
+        </div>
+        <div className="rounded-[20px] border border-slate-200 bg-slate-50 p-4">
+          <p className="flex items-center gap-2 text-xs font-semibold text-slate-500"><MapPin size={14} /> Lokasi Masjid</p>
+          <p className="mt-2 font-semibold text-slate-950">Pekanbaru, Riau</p>
+        </div>
+      </div>
     </section>
   );
 }

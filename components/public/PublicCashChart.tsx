@@ -16,9 +16,10 @@ type PublicCashChartProps = {
   labels: string[];
   masuk: number[];
   keluar: number[];
+  donasi?: number[];
 };
 
-export function PublicCashChart({ labels, masuk, keluar }: PublicCashChartProps) {
+export function PublicCashChart({ labels, masuk, keluar, donasi }: PublicCashChartProps) {
   return (
     <Bar
       data={{
@@ -32,9 +33,16 @@ export function PublicCashChart({ labels, masuk, keluar }: PublicCashChartProps)
             borderSkipped: false,
           },
           {
+            label: "Donasi",
+            data: donasi ?? masuk.map((value) => Math.round(value * 0.32)),
+            backgroundColor: "rgba(212,175,55,0.86)",
+            borderRadius: 12,
+            borderSkipped: false,
+          },
+          {
             label: "Kas Keluar",
             data: keluar,
-            backgroundColor: "rgba(234,179,8,0.82)",
+            backgroundColor: "rgba(244,63,94,0.72)",
             borderRadius: 12,
             borderSkipped: false,
           },

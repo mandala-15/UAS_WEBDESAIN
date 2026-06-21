@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { kasKeluar, kasMasuk } from "@/db/schema";
 import { sampleKasKeluar, sampleKasMasuk } from "@/lib/sample-data";
 import { formatRupiah } from "@/lib/utils";
+import { AnimatedAmount } from "./AnimatedAmount";
 import { MotionCard, Stagger } from "./MotionPrimitives";
 import { PublicCashChart } from "./PublicCashChart";
 
@@ -37,6 +38,7 @@ function buildChartData(masuk: { tanggal: string; jumlah: string }[], keluar: { 
     labels: dates.map((date) => new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short" }).format(new Date(date))),
     masuk: dates.map((date) => masuk.filter((item) => item.tanggal === date).reduce((sum, item) => sum + Number(item.jumlah), 0)),
     keluar: dates.map((date) => keluar.filter((item) => item.tanggal === date).reduce((sum, item) => sum + Number(item.jumlah), 0)),
+    donasi: dates.map((date) => Math.round(masuk.filter((item) => item.tanggal === date).reduce((sum, item) => sum + Number(item.jumlah), 0) * 0.32)),
   };
 }
 
@@ -78,8 +80,12 @@ export async function PublicStats() {
                       <TrendIcon size={13} /> {item.trend}
                     </span>
                   </div>
-                  <p className="mt-5 text-sm text-slate-600">{item.label}</p>
-                  <p className="mt-1 text-2xl font-semibold text-slate-950">{formatRupiah(values[index])}</p>
+                  <p className="mt-5 text-sm text-slate-600">
+                    {item.label === "Pemasukan" ? "Total pemasukan" : item.label === "Pengeluaran" ? "Total pengeluaran" : item.label === "Saldo Kas" ? "Saldo aktif" : "Total donasi"}
+                  </p>
+                  <p className="mt-1 text-2xl font-semibold text-slate-950">
+                    <AnimatedAmount value={values[index]} />
+                  </p>
                 </article>
               </MotionCard>
             );
@@ -93,12 +99,12 @@ export async function PublicStats() {
                 <ReceiptText size={21} />
               </span>
               <div>
-                <h3 className="font-semibold text-slate-950">Laporan Kas Bulanan</h3>
-                <p className="text-sm text-slate-500">Grafik kas masuk dan keluar terbaru.</p>
+                <h3 className="font-semibold text-slate-950">Dashboard Keuangan Publik</h3>
+                <p className="text-sm text-slate-500">Grafik kas masuk, kas keluar, dan estimasi donasi terbaru.</p>
               </div>
             </div>
             <div className="h-[280px]">
-              <PublicCashChart labels={chart.labels} masuk={chart.masuk} keluar={chart.keluar} />
+              <PublicCashChart labels={chart.labels} masuk={chart.masuk} keluar={chart.keluar} donasi={chart.donasi} />
             </div>
           </div>
 

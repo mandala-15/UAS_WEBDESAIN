@@ -17,7 +17,7 @@ export function AboutSection() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#052e2b]/90 via-[#052e2b]/30 to-transparent" />
             <div className="absolute bottom-0 p-6 text-white">
               <Landmark className="text-yellow-300" size={34} />
-              <h2 className="mt-4 text-3xl font-semibold">Portal Masjid Pekanbaru</h2>
+              <h2 className="mt-4 text-3xl font-semibold">Masjid Mitfhaul Jannah</h2>
               <p className="mt-3 max-w-md text-sm leading-7 text-emerald-50/78">
                 Ruang informasi publik untuk mendekatkan pengurus dan jamaah melalui data yang rapi, terbuka, dan mudah dipahami.
               </p>
@@ -30,7 +30,7 @@ export function AboutSection() {
               Melayani jamaah dengan informasi yang terbuka dan tertata.
             </h3>
             <p className="mt-4 text-sm leading-7 text-slate-600">
-              Portal ini membantu jamaah melihat agenda terbaru, jadwal ibadah, dokumentasi kegiatan, dan ringkasan kas tanpa perlu mengakses halaman pengelolaan. Dashboard admin tetap terpisah untuk pengurus.
+              Portal ini membantu jamaah Masjid Mitfhaul Jannah melihat agenda terbaru, jadwal ibadah, dokumentasi kegiatan, lokasi, donasi, dan ringkasan kas tanpa perlu mengakses halaman pengelolaan.
             </p>
 
             <div className="mt-6 grid gap-3">
@@ -49,7 +49,7 @@ export function AboutSection() {
               </div>
               <div className="rounded-2xl bg-yellow-50 p-4">
                 <MapPin className="text-yellow-700" size={20} />
-                <p className="mt-2 text-sm font-semibold text-slate-950">Pekanbaru</p>
+                <p className="mt-2 text-sm font-semibold text-slate-950">Jalan Budi Daya</p>
               </div>
               <div className="rounded-2xl bg-sky-50 p-4">
                 <Mail className="text-sky-700" size={20} />
@@ -63,7 +63,7 @@ export function AboutSection() {
           <div className="grid gap-6 md:grid-cols-[1fr_auto] md:items-center">
             <div>
               <p className="text-sm font-semibold text-yellow-200">Call To Action</p>
-              <h2 className="mt-2 text-3xl font-semibold">Mari bersama menjaga transparansi dan kemakmuran masjid.</h2>
+              <h2 className="mt-2 text-3xl font-semibold">Mari bersama menjaga transparansi dan kemakmuran Masjid Mitfhaul Jannah.</h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-emerald-50/72">
                 Dukung pengelolaan yang terbuka melalui informasi kas, agenda, dan dokumentasi yang dapat dipantau jamaah.
               </p>

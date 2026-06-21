@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Manajemen Kas Mesjid",
-  description: "Portal mesjid dan sistem manajemen kas berbasis Next.js, Supabase, dan Drizzle.",
+  title: "Masjid Mitfhaul Jannah | Modern Islamic Digital Experience Platform",
+  description: "Portal digital Masjid Mitfhaul Jannah Pekanbaru untuk jadwal sholat, kegiatan jamaah, donasi, galeri, lokasi, dan transparansi laporan kas.",
 };
 
 export default function RootLayout({

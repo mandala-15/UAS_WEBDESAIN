@@ -8,6 +8,13 @@
       "when": 1779068392276,
       "tag": "0000_colorful_maximus",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1782039956071,
+      "tag": "0001_curious_riptide",
+      "breakpoints": true
     }
   ]
 }

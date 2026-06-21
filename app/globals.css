@@ -208,3 +208,39 @@ select {
     transform: translateY(-10px);
   }
 }
+
+.portal-skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.portal-skeleton-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+  animation: portal-skeleton-shimmer 1.7s ease-in-out infinite;
+}
+
+.portal-logo-pulse {
+  animation: portal-logo-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes portal-skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes portal-logo-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 26px rgba(212, 175, 55, 0.18);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 42px rgba(212, 175, 55, 0.38);
+  }
+}

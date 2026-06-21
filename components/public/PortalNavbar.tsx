@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Landmark, Menu, Search, X } from "lucide-react";
+import { Bell, Menu, Search, X } from "lucide-react";
+import { MosqueLogo } from "./MosqueLogo";
 
 const links = [
-  { label: "Beranda", href: "/" },
-  { label: "Fitur", href: "/#fitur" },
-  { label: "Jadwal", href: "/#jadwal" },
+  { label: "Beranda", href: "/#beranda" },
+  { label: "Jadwal Sholat", href: "/#jadwal" },
   { label: "Kegiatan", href: "/#kegiatan" },
+  { label: "Donasi", href: "/#donasi" },
   { label: "Laporan", href: "/#laporan" },
   { label: "Galeri", href: "/#galeri" },
   { label: "Tentang", href: "/#tentang" },
@@ -35,14 +36,8 @@ export function PortalNavbar() {
       }`}
     >
       <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4">
-        <Link href="/" className="flex min-w-0 items-center gap-3 text-white">
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-yellow-300/35 bg-white/10 text-yellow-300 shadow-[0_0_28px_rgba(234,179,8,0.14)]">
-            <Landmark size={22} />
-          </span>
-          <span className="min-w-0">
-            <span className="block truncate text-lg font-semibold leading-5">Portal Masjid</span>
-            <span className="block truncate text-sm text-emerald-50/72">Pekanbaru</span>
-          </span>
+        <Link href="/#beranda" className="min-w-0 text-white">
+          <MosqueLogo />
         </Link>
 
         <div className="hidden items-center rounded-full border border-white/10 bg-white/[0.06] p-1 lg:flex">
@@ -64,6 +59,12 @@ export function PortalNavbar() {
           <button className="hidden h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/[0.06] hover:bg-white/12 md:grid" aria-label="Cari">
             <Search size={18} />
           </button>
+          <button className="hidden h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/[0.06] hover:bg-white/12 md:grid" aria-label="Notifikasi">
+            <Bell size={18} />
+          </button>
+          <Link href="/#donasi" className="hidden rounded-full bg-[#D4AF37] px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-yellow-300 md:inline-flex">
+            Donasi
+          </Link>
           <button
             type="button"
             onClick={() => setOpen((value) => !value)}

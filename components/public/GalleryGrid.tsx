@@ -6,6 +6,8 @@ import { galeri } from "@/db/schema";
 import { sampleGaleri } from "@/lib/sample-data";
 import { MotionCard, Stagger } from "./MotionPrimitives";
 
+const categories = ["Kegiatan Jamaah", "Kajian", "Sosial", "Ramadhan"];
+
 async function getPublicGallery() {
   try {
     const rows = await db.select().from(galeri).orderBy(desc(galeri.createdAt)).limit(6);
@@ -33,8 +35,15 @@ export async function GalleryGrid() {
             <p className="text-sm font-semibold text-emerald-700">Dokumentasi</p>
             <h2 className="mt-2 flex items-center gap-3 text-3xl font-semibold text-slate-950 md:text-4xl">
               <ImageIcon className="text-emerald-700" size={28} />
-              Galeri kegiatan
+              Galeri modern kegiatan
             </h2>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {categories.map((category) => (
+                <span key={category} className="rounded-full border border-emerald-100 bg-white px-3 py-1.5 text-xs font-semibold text-emerald-800 shadow-sm">
+                  {category}
+                </span>
+              ))}
+            </div>
           </div>
           <Link href="/galeri" className="inline-flex w-fit items-center gap-1 rounded-full px-3 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-50">
             Lihat semua <ArrowRight size={15} />
