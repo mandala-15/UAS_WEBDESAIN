@@ -60,7 +60,7 @@ export async function PublicStats() {
         <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-sm font-semibold text-emerald-700">Ringkasan Keuangan</p>
-            <h2 className="mt-2 text-3xl font-semibold text-slate-950 md:text-4xl">Laporan kas publik yang mudah dibaca</h2>
+            <h2 className="mt-2 text-2xl font-semibold text-slate-950 sm:text-3xl md:text-4xl">Laporan kas publik yang mudah dibaca</h2>
           </div>
           <p className="max-w-md text-sm leading-6 text-slate-500">Data keuangan diperbarui berkala dari database Supabase.</p>
         </div>
@@ -92,18 +92,18 @@ export async function PublicStats() {
           })}
         </Stagger>
 
-        <div className="mt-5 grid gap-5 lg:grid-cols-[1fr_360px]">
+        <div className="mt-5 grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
           <div className="rounded-[28px] border border-slate-200/70 bg-white p-5 shadow-[0_22px_70px_rgba(15,23,42,0.08)]">
-            <div className="mb-5 flex items-center gap-3">
+            <div className="mb-5 flex items-start gap-3 sm:items-center">
               <span className="grid h-11 w-11 place-items-center rounded-2xl bg-emerald-50 text-emerald-700">
                 <ReceiptText size={21} />
               </span>
-              <div>
+              <div className="min-w-0">
                 <h3 className="font-semibold text-slate-950">Dashboard Keuangan Publik</h3>
                 <p className="text-sm text-slate-500">Grafik kas masuk, kas keluar, dan estimasi donasi terbaru.</p>
               </div>
             </div>
-            <div className="h-[280px]">
+            <div className="h-[260px] min-w-0 sm:h-[280px]">
               <PublicCashChart labels={chart.labels} masuk={chart.masuk} keluar={chart.keluar} donasi={chart.donasi} />
             </div>
           </div>
@@ -112,12 +112,12 @@ export async function PublicStats() {
             <h3 className="font-semibold text-slate-950">Transaksi terbaru</h3>
             <div className="mt-4 space-y-3">
               {latest.map((item, index) => (
-                <div key={`${item.type}-${item.title}-${index}`} className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 p-3">
-                  <div>
+                <div key={`${item.type}-${item.title}-${index}`} className="grid gap-2 rounded-2xl bg-slate-50 p-3 sm:flex sm:items-center sm:justify-between sm:gap-3">
+                  <div className="min-w-0">
                     <p className="text-sm font-semibold text-slate-900">{item.title}</p>
                     <p className="text-xs text-slate-500">{item.type}</p>
                   </div>
-                  <p className="text-sm font-semibold text-slate-950">{formatRupiah(Number(item.amount))}</p>
+                  <p className="break-words text-sm font-semibold text-slate-950 sm:text-right">{formatRupiah(Number(item.amount))}</p>
                 </div>
               ))}
             </div>

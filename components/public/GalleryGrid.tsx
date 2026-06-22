@@ -33,8 +33,8 @@ export async function GalleryGrid() {
         <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-sm font-semibold text-emerald-700">Dokumentasi</p>
-            <h2 className="mt-2 flex items-center gap-3 text-3xl font-semibold text-slate-950 md:text-4xl">
-              <ImageIcon className="text-emerald-700" size={28} />
+            <h2 className="mt-2 flex items-start gap-3 text-2xl font-semibold text-slate-950 sm:items-center md:text-4xl">
+              <ImageIcon className="mt-1 shrink-0 text-emerald-700 sm:mt-0" size={28} />
               Galeri modern kegiatan
             </h2>
             <div className="mt-4 flex flex-wrap gap-2">
@@ -55,7 +55,7 @@ export async function GalleryGrid() {
             <MotionCard
               key={item.id}
               className={`group relative overflow-hidden rounded-[20px] bg-slate-200 shadow-[0_18px_50px_rgba(15,23,42,0.10)] ${
-                index === 0 ? "h-[360px] sm:col-span-2 lg:col-span-2 lg:h-[430px]" : "h-[300px] lg:h-[430px]"
+                index === 0 ? "h-[260px] sm:col-span-2 sm:h-[360px] lg:col-span-2 lg:h-[430px]" : "h-[240px] sm:h-[300px] lg:h-[430px]"
               }`}
             >
               <article className="absolute inset-0">

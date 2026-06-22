@@ -58,6 +58,7 @@ export function PublicCashChart({ labels, masuk, keluar, donasi }: PublicCashCha
               boxWidth: 10,
               boxHeight: 10,
               usePointStyle: true,
+              padding: 12,
             },
           },
           tooltip: {
@@ -69,13 +70,14 @@ export function PublicCashChart({ labels, masuk, keluar, donasi }: PublicCashCha
         scales: {
           x: {
             grid: { display: false },
-            ticks: { color: "#64748b" },
+            ticks: { color: "#64748b", maxRotation: 0, autoSkip: true },
           },
           y: {
             border: { display: false },
             grid: { color: "rgba(100,116,139,0.12)" },
             ticks: {
               color: "#64748b",
+              maxTicksLimit: 5,
               callback: (value) => `${Number(value) / 1_000_000} jt`,
             },
           },

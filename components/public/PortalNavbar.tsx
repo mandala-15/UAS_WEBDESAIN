@@ -35,8 +35,8 @@ export function PortalNavbar() {
           : "border-white/10 bg-[#052e2b]/38 backdrop-blur-xl"
       }`}
     >
-      <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4">
-        <Link href="/#beranda" className="min-w-0 text-white">
+      <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-3 sm:h-20 sm:px-4">
+        <Link href="/#beranda" className="min-w-0 flex-1 text-white lg:flex-none">
           <MosqueLogo />
         </Link>
 
@@ -55,7 +55,7 @@ export function PortalNavbar() {
           ))}
         </div>
 
-        <div className="flex items-center gap-2 text-white">
+        <div className="flex shrink-0 items-center gap-2 text-white">
           <button className="hidden h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/[0.06] hover:bg-white/12 md:grid" aria-label="Cari">
             <Search size={18} />
           </button>
@@ -77,8 +77,8 @@ export function PortalNavbar() {
       </nav>
 
       {open ? (
-        <div className="border-t border-white/10 bg-[#052e2b]/96 px-4 py-4 backdrop-blur-2xl lg:hidden">
-          <div className="mx-auto grid max-w-7xl gap-2">
+        <div className="max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-white/10 bg-[#052e2b]/96 px-3 py-3 backdrop-blur-2xl sm:px-4 sm:py-4 lg:hidden">
+          <div className="mx-auto grid max-w-7xl gap-1.5 sm:gap-2">
             {links.map((link) => (
               <Link
                 key={link.label}
