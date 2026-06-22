@@ -12,7 +12,33 @@ export function ModernTable({
 }) {
   return (
     <div className="overflow-hidden rounded-[28px] border border-white/70 bg-white/82 shadow-[0_24px_70px_rgba(15,23,42,0.08)] backdrop-blur-xl">
-      <div className="max-h-[560px] overflow-auto">
+      <div className="grid gap-3 p-4 md:hidden">
+        {rows.map((row, index) => (
+          <article key={index} className="rounded-2xl border border-stone-100 bg-white p-4 shadow-sm">
+            <div className="grid gap-3">
+              {row.map((cell, cellIndex) => (
+                <div key={cellIndex} className="grid gap-1">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-stone-400">{columns[cellIndex]}</p>
+                  <div className="break-words text-sm text-stone-700">{cell}</div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button className="inline-flex items-center gap-2 rounded-xl bg-stone-50 px-3 py-2 text-xs font-semibold text-stone-600 hover:text-emerald-700" title="Lihat">
+                <Eye size={15} /> Lihat
+              </button>
+              <button className="inline-flex items-center gap-2 rounded-xl bg-stone-50 px-3 py-2 text-xs font-semibold text-stone-600 hover:text-amber-700" title="Edit">
+                <Pencil size={15} /> Edit
+              </button>
+              <button className="inline-flex items-center gap-2 rounded-xl bg-stone-50 px-3 py-2 text-xs font-semibold text-stone-600 hover:text-stone-900" title="Menu">
+                <MoreHorizontal size={15} /> Menu
+              </button>
+            </div>
+          </article>
+        ))}
+        {rows.length === 0 ? <p className="rounded-2xl bg-white px-4 py-10 text-center text-sm text-stone-500">{empty}</p> : null}
+      </div>
+      <div className="hidden max-h-[560px] overflow-auto md:block">
         <table className="w-full min-w-[720px] border-separate border-spacing-0 text-sm">
           <thead className="sticky top-0 z-10 bg-white/90 backdrop-blur-xl">
             <tr>
@@ -59,7 +85,7 @@ export function ModernTable({
           </tbody>
         </table>
       </div>
-      <div className="flex items-center justify-between border-t border-stone-100 px-5 py-4 text-sm text-stone-500">
+      <div className="flex flex-col gap-3 border-t border-stone-100 px-5 py-4 text-sm text-stone-500 sm:flex-row sm:items-center sm:justify-between">
         <span>Menampilkan {rows.length} data</span>
         <div className="flex gap-2">
           <button className="rounded-xl border border-stone-200 px-3 py-2 hover:bg-stone-50">Prev</button>

@@ -1,12 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import { FormEvent, useMemo, useState } from "react";
 import {
   ArrowRight,
   Banknote,
   CheckCircle2,
   HeartHandshake,
-  QrCode,
   X,
 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -38,6 +38,8 @@ const donationPrograms = [
 
 const purposes = ["Renovasi Masjid", "Operasional Masjid", "Santunan Anak Yatim", "Pendidikan Al-Quran", "Jumat Berkah", "Wakaf Masjid"];
 const donationAccount = "081262249354";
+const donationAccountName = "Farid Ahmad Alsa";
+const qrisImage = "/dana-qris-farid-ahmad-alsa-qr.jpeg";
 
 const recentDonations = [
   { name: "Ahmad Fauzi", amount: 100_000, program: "Renovasi Masjid", date: "21 Juni 2026" },
@@ -155,11 +157,11 @@ export function DonationSection() {
           })}
         </div>
 
-        <div className="mt-6 grid gap-5 lg:grid-cols-[360px_1fr]">
+        <div className="mt-6 grid gap-5 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)]">
           <div className="rounded-[28px] bg-[#064E3B] p-5 text-white shadow-[0_24px_70px_rgba(6,78,59,0.20)]">
             <p className="text-sm font-semibold text-yellow-200">Statistik Donasi</p>
             <p className="mt-5 text-sm text-emerald-50/72">Total dana terkumpul</p>
-            <p className="mt-1 text-3xl font-semibold">{formatRupiah(totals.collected)}</p>
+            <p className="mt-1 break-words text-2xl font-semibold sm:text-3xl">{formatRupiah(totals.collected)}</p>
             <div className="mt-5 grid grid-cols-2 gap-3">
               <div className="rounded-2xl bg-white/10 p-4">
                 <p className="text-xs text-emerald-50/70">Total donatur</p>
@@ -196,34 +198,34 @@ export function DonationSection() {
       </div>
 
       {open ? (
-        <div className="fixed inset-0 z-[80] overflow-y-auto bg-slate-950/68 px-4 py-6 backdrop-blur-sm">
-          <div className="mx-auto max-w-4xl overflow-hidden rounded-[30px] bg-white shadow-[0_30px_90px_rgba(0,0,0,0.32)]">
-            <div className="flex items-center justify-between gap-4 bg-[#064E3B] px-5 py-4 text-white">
-              <div>
+        <div className="fixed inset-0 z-[80] overflow-y-auto bg-slate-950/68 px-3 py-4 backdrop-blur-sm sm:px-4 sm:py-6">
+          <div className="mx-auto max-w-4xl overflow-hidden rounded-[24px] bg-white shadow-[0_30px_90px_rgba(0,0,0,0.32)] sm:rounded-[30px]">
+            <div className="flex items-center justify-between gap-4 bg-[#064E3B] px-4 py-4 text-white sm:px-5">
+              <div className="min-w-0">
                 <p className="text-sm text-emerald-50/76">Form Donasi Digital</p>
-                <h3 className="text-xl font-semibold">Pilih tujuan donasi</h3>
+                <h3 className="text-lg font-semibold sm:text-xl">Pilih tujuan donasi</h3>
               </div>
-              <button type="button" onClick={() => setOpen(false)} className="grid h-10 w-10 place-items-center rounded-full bg-white/10 hover:bg-white/18" aria-label="Tutup donasi">
+              <button type="button" onClick={() => setOpen(false)} className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 hover:bg-white/18" aria-label="Tutup donasi">
                 <X size={19} />
               </button>
             </div>
 
-            <form onSubmit={submitDonation} className="grid gap-0 lg:grid-cols-[1fr_330px]">
-              <div className="p-5">
+            <form onSubmit={submitDonation} className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_minmax(300px,330px)]">
+              <div className="min-w-0 p-4 sm:p-5">
                 <div className="grid gap-3 sm:grid-cols-2">
                   {purposes.map((purpose) => (
                     <button
                       key={purpose}
                       type="button"
                       onClick={() => setSelectedPurpose(purpose)}
-                      className={`flex items-center gap-3 rounded-2xl border p-3 text-left text-sm font-semibold transition ${
+                      className={`flex min-w-0 items-center gap-3 rounded-2xl border p-3 text-left text-sm font-semibold transition ${
                         selectedPurpose === purpose ? "border-emerald-600 bg-emerald-50 text-emerald-900" : "border-slate-200 bg-white text-slate-700 hover:border-emerald-200"
                       }`}
                     >
                       <span className={`grid h-5 w-5 place-items-center rounded-md border ${selectedPurpose === purpose ? "border-emerald-600 bg-emerald-600 text-white" : "border-slate-300"}`}>
                         {selectedPurpose === purpose ? <CheckCircle2 size={14} /> : null}
                       </span>
-                      {purpose}
+                      <span className="min-w-0 break-words">{purpose}</span>
                     </button>
                   ))}
                 </div>
@@ -248,17 +250,26 @@ export function DonationSection() {
                 </div>
               </div>
 
-              <aside className="bg-slate-50 p-5">
+              <aside className="min-w-0 bg-slate-50 p-4 sm:p-5">
                 <p className="text-sm font-semibold text-slate-950">Metode Pembayaran</p>
                 <div className="mt-3 rounded-2xl border border-emerald-200 bg-white p-4 text-center shadow-sm">
-                  <div className="mx-auto grid aspect-square w-full max-w-52 place-items-center rounded-2xl border border-dashed border-emerald-300 bg-emerald-50 text-emerald-800">
-                    <QrCode size={128} strokeWidth={1.4} />
+                  <div className="mx-auto w-full max-w-60 overflow-hidden rounded-2xl border border-emerald-100 bg-white p-2 shadow-inner">
+                    <Image
+                      src={qrisImage}
+                      alt={`QRIS DANA donasi atas nama ${donationAccountName}`}
+                      width={465}
+                      height={465}
+                      priority
+                      className="h-auto w-full"
+                    />
                   </div>
                   <p className="mt-4 text-sm font-semibold text-slate-950">QRIS / DANA</p>
-                  <p className="mt-1 text-xs text-slate-500">Tujuan dana</p>
+                  <p className="mt-1 text-xs text-slate-500">Atas nama</p>
+                  <p className="mt-1 break-words text-base font-semibold text-emerald-700">{donationAccountName}</p>
+                  <p className="mt-3 text-xs text-slate-500">Nomor DANA</p>
                   <p className="mt-1 text-lg font-semibold tracking-wide text-emerald-700">{donationAccount}</p>
                   <p className="mt-3 text-xs leading-5 text-slate-500">
-                    Gunakan aplikasi DANA atau e-wallet yang mendukung QRIS, lalu masukkan nomor tujuan ini saat pembayaran.
+                    Scan QR ini melalui DANA atau e-wallet yang mendukung QRIS untuk pembayaran donasi.
                   </p>
                 </div>
                 <div className="mt-5 rounded-2xl bg-white p-4">
