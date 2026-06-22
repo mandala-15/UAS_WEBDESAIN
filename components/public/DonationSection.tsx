@@ -4,11 +4,9 @@ import { FormEvent, useMemo, useState } from "react";
 import {
   ArrowRight,
   Banknote,
-  Building2,
   CheckCircle2,
   HeartHandshake,
   QrCode,
-  Smartphone,
   X,
 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -39,11 +37,7 @@ const donationPrograms = [
 ];
 
 const purposes = ["Renovasi Masjid", "Operasional Masjid", "Santunan Anak Yatim", "Pendidikan Al-Quran", "Jumat Berkah", "Wakaf Masjid"];
-const paymentMethods = [
-  { label: "QRIS", value: "qris", icon: QrCode },
-  { label: "Transfer Bank", value: "bank_transfer", icon: Building2 },
-  { label: "E-wallet", value: "ewallet", icon: Smartphone },
-];
+const donationAccount = "081262249354";
 
 const recentDonations = [
   { name: "Ahmad Fauzi", amount: 100_000, program: "Renovasi Masjid", date: "21 Juni 2026" },
@@ -55,7 +49,6 @@ const recentDonations = [
 export function DonationSection() {
   const [open, setOpen] = useState(false);
   const [selectedPurpose, setSelectedPurpose] = useState("Renovasi Masjid");
-  const [payment, setPayment] = useState("qris");
   const [submitStatus, setSubmitStatus] = useState<string | null>(null);
 
   const totals = useMemo(() => {
@@ -78,7 +71,7 @@ export function DonationSection() {
         amount: formData.get("amount"),
         whatsapp: formData.get("whatsapp"),
         message: formData.get("message"),
-        paymentMethod: payment,
+        paymentMethod: "qris",
       }),
     });
 
@@ -257,25 +250,16 @@ export function DonationSection() {
 
               <aside className="bg-slate-50 p-5">
                 <p className="text-sm font-semibold text-slate-950">Metode Pembayaran</p>
-                <div className="mt-3 grid gap-3">
-                  {paymentMethods.map((method) => {
-                    const Icon = method.icon;
-                    return (
-                      <button
-                        key={method.label}
-                        type="button"
-                        onClick={() => setPayment(method.value)}
-                        className={`flex items-center gap-3 rounded-2xl border p-4 text-left text-sm font-semibold ${
-                          payment === method.value ? "border-emerald-600 bg-white text-emerald-900 shadow-sm" : "border-slate-200 bg-white/70 text-slate-700"
-                        }`}
-                      >
-                        <span className="grid h-10 w-10 place-items-center rounded-xl bg-emerald-50 text-emerald-700">
-                          <Icon size={19} />
-                        </span>
-                        {method.label}
-                      </button>
-                    );
-                  })}
+                <div className="mt-3 rounded-2xl border border-emerald-200 bg-white p-4 text-center shadow-sm">
+                  <div className="mx-auto grid aspect-square w-full max-w-52 place-items-center rounded-2xl border border-dashed border-emerald-300 bg-emerald-50 text-emerald-800">
+                    <QrCode size={128} strokeWidth={1.4} />
+                  </div>
+                  <p className="mt-4 text-sm font-semibold text-slate-950">QRIS / DANA</p>
+                  <p className="mt-1 text-xs text-slate-500">Tujuan dana</p>
+                  <p className="mt-1 text-lg font-semibold tracking-wide text-emerald-700">{donationAccount}</p>
+                  <p className="mt-3 text-xs leading-5 text-slate-500">
+                    Gunakan aplikasi DANA atau e-wallet yang mendukung QRIS, lalu masukkan nomor tujuan ini saat pembayaran.
+                  </p>
                 </div>
                 <div className="mt-5 rounded-2xl bg-white p-4">
                   <p className="text-xs text-slate-500">Tujuan dipilih</p>
